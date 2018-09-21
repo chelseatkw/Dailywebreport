@@ -1,0 +1,403 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Olab AutoTest Report</title>
+<link rel="stylesheet" type="text/css" media="screen" href="css-table.css" />
+<link rel="icon" href="favicon.ico" type="image/x-icon" />
+<script type="text/javascript" src="js/jquery-1.2.6.min.js"></script>
+<script type="text/javascript" src="js/style-table.js"></script>
+    <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      var jsonData = $.ajax({
+      url: "getData.php",
+      dataType: "json",
+      async: false
+     }).responseText;
+
+      var obj = jQuery.parseJSON( jsonData );
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawVisualization);
+
+      function drawVisualization() {
+         var data = new google.visualization.DataTable();
+        data.addColumn('string',"Tests");
+        data.addColumn('number',"Pass");
+        data.addColumn('number',"Fail");
+        data.addColumn('number',"Passing Rate");
+        // Some raw data (not necessarily accurate)
+    for(var i=obj.length-5;i<=obj.length-1;i++){
+         data.addRow([obj[i].Tests,obj[i].Sucess,obj[i].Fail,obj[i].Percentage]);
+    }
+
+    var options = {
+        //width: 900,
+        //height: 200,
+        seriesType: 'bars',
+        isStacked: true,
+        colors: ["#1EC659", "#F88282", "3399cc"],
+        curveType: 'function',
+        focusTarget: 'category',
+        series: {
+            2: {type: 'line', targetAxisIndex:1}
+        },
+        vAxes: {
+            0: {title: 'Test Counts'},
+            1: {title: 'Pass %', format: 'percent'}
+        }
+    };
+
+    var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+  }
+
+$(window).resize(function(){
+  drawVisualization();
+});
+(function ($) {
+
+  $.getUrlParam = function (name) {
+
+   var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+
+   var r = window.location.search.substr(1).match(reg);
+
+   if (r != null) return unescape(r[2]); return null;
+
+  }
+
+ })(jQuery);
+
+    var page=1;
+    //if($.getUrlParam('page').equals("")){;}
+   page = $.getUrlParam('page');
+
+    var jsonData2;
+    var obj2;
+    var PCname="All";
+    //alert($.getUrlParam('pcname'));
+
+
+    if($.getUrlParam('pcname')==null){PCname="All";}
+    else{PCname = $.getUrlParam('pcname');}
+    //alert(PCname);
+
+    if(page==1){
+      jsonData2 = $.ajax({
+      url: "getDataSortbyName.php",
+      dataType: "json",
+      async: false
+     }).responseText;
+      obj2 = jQuery.parseJSON( jsonData2 );
+    }
+    else{
+       jsonData2 = $.ajax({
+      url: "getDataSortbyPercentage.php",
+      dataType: "json",
+      async: false
+     }).responseText;
+      obj2 = jQuery.parseJSON( jsonData2 );
+    }
+    
+ function clickaction(){
+    //alert("click action!");
+    window.location.replace("./?page=1");
+}
+ function clickaction2(){
+    //alert("click action!");
+    window.location.replace("./?page=2");
+}
+
+function changePC(pcname){
+    var strurl="";
+    strurl=strurl.concat("./?page=2&pcname=",pcname);
+    window.location.replace(strurl);
+    //alert(pcname);
+}
+
+function myconfirm(){
+    if(window.confirm('Sure Running?')){
+                 //alert("YES;
+                 return true;
+              }else{
+                 //alert("NO);
+                 return false;
+             }
+}
+
+
+ function clickaction3(jobName){
+    //C:\"Program Files"\curl\curl.exe -X POST http://william:85f34012cdbd865e24450b8f317bf860@192.168.18.131:8080/view/OriginPro_Workflow/job/ATSummaryWeb/build?token=iFBDOBhNhaxL4T9ass93HRXun2JF161Y) 
+
+    if (myconfirm()==true){
+  //var wsh=new ActiveXObject("WScript.Shell"); 
+ //wsh.RegWrite("HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_HTTP_USERNAME_PASSWORD_DISABLE","");
+ //wsh.RegWrite("HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_HTTP_USERNAME_PASSWORD_DISABLE\\iexplore.exe ","0","REG_DWORD");
+ // wsh.RegWrite("HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_HTTP_USERNAME_PASSWORD_DISABLE\\iexplore.exe ","0","REG_DWORD");
+ //wsh.RegWrite("HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\Start Page","http:/www.sun.com","REG_SZ");
+    //var strurl="";
+    //strurl=strurl.concat("http://william:85f34012cdbd865e24450b8f317bf860@192.168.18.131:8080/job/Origin_Latest_",jobName,"/build");
+    // var formStr="";
+   // formStr =formStr.concat('<form style="visibility:hidden;" method="POST" action="',strurl ,'"><input type="hidden" name="token" value="secret" /></form>');
+  
+    //  var win = window.open("", "_self");
+   //   win.document.body.innerHTML = formStr;
+   //   win.document.forms[0].submit();
+
+    var strurl="";
+    strurl=strurl.concat("runCase.php?jobName=",jobName);
+    window.open(strurl,'_self');
+    //window.location.href='http://192.168.18.108/ATSummary/';
+    window.open("http://192.168.18.108/ATSummary","_blank");
+    //setTimeout("location.href='http://192.168.18.108/DEV/'",30);
+  }
+}
+
+ function getTitle(tipid,shortNodeName){
+     //alert(tipid);
+      var jsonScreen = $.ajax({
+      url: "screen.json",
+      dataType: "json",
+      async: false
+     }).responseText;
+     var objs = jQuery.parseJSON(jsonScreen);
+     var strs="screenresolution=";
+     switch (shortNodeName)
+      {
+      case "AT1_GZ":
+        strs=strs.concat(objs.AT1_GZ[0]);
+        document.getElementById(tipid).title=strs;
+        break;
+      case "AT2_GZ":
+        strs=strs.concat(objs.AT2_GZ[0]);
+        document.getElementById(tipid).title=strs;
+        break;
+      case "AT3_GZ":
+        strs=strs.concat(objs.AT3_GZ[0]);
+        document.getElementById(tipid).title=strs;
+        break;
+      case "AT4_GZ":
+        strs=strs.concat(objs.AT4_GZ[0]);
+        document.getElementById(tipid).title=strs;
+        break;
+      case "AT5_GZ":
+        strs=strs.concat(objs.AT5_GZ[0]);
+        document.getElementById(tipid).title=strs;
+        break;
+      }
+ }
+    </script>
+
+</head>
+
+<body>
+  <div id='header' style="width: 90%; overflow: hidden;">
+    <div id='summary' style="width: 38.2%; float: left;">
+      <div style=" border:1px; border-style:solid; border-color:#3399cc; border-radius:5px; padding: 4px">
+      	<table id='t_summary'>
+      		<thead><tr><th colspan="2">Summary</th></tr></thead>
+      		<tbody>
+      			<tr><th>Build Number:</th><td><div id='build_num'></div></td></tr>
+      			<tr><th>Start Time:</th><td><div id='start_time'></div></td></tr>
+      			<tr><th># of Cases:</th><td><div id='num_of_cases'></div></td></tr>
+      			<tr><th># of Pass:</th><td><div id='num_of_pass'></div></td></tr>
+      			<tr><th>Passing Rate:</th><td><div id='passing_rate'></div></td></tr>
+      		</tbody>
+      	</table>
+      </div> <br />
+    </div>
+    <div id='trend'  style="margin-left: 38.8%;">
+      <div id="chart_div" style="width: 100%; height: 200px;"></div>
+    </div>
+  </div>
+  <div id='tester_check'>
+    <div id='checkAllDiv'><input type="checkbox" id="checkAll" checked>All</div>
+    <div id='checkItemDiv_billy' class='inline'><input type="checkbox" id="checkItem_billy" checked>Billy</div>
+    <div id='checkItemDiv_chelsea' class='inline'><input type="checkbox" id="checkItem_chelsea" checked>Chelsea</div>
+    <div id='checkItemDiv_passino' class='inline'><input type="checkbox" id="checkItem_passino" checked>Passino</div>
+    <div id='checkItemDiv_penny' class='inline'><input type="checkbox" id="checkItem_penny" checked>Penny</div>
+    <div id='checkItemDiv_polly' class='inline'><input type="checkbox" id="checkItem_polly" checked>Polly</div>
+    <div id='checkItemDiv_william' class='inline'><input type="checkbox" id="checkItem_william" checked>William</div>
+  </div>
+<script type="text/javascript">
+      var len=obj.length;
+      var today=len-1;
+      var build_num = obj[today].Tests;
+      var start_time = obj[today].StartTime;
+      var num_of_pass = obj[today].Sucess;
+      var num_of_failed = obj[today].Fail;
+      var num_of_cases = num_of_pass + num_of_failed;
+      var passing_rate = obj[today].Percentage*100;
+      passing_rate = passing_rate.toPrecision(4) + "%";
+      $('#build_num').text(build_num);
+      $('#start_time').text(start_time);
+      $('#num_of_cases').text(num_of_cases);
+      $('#num_of_pass').text(num_of_pass);
+      $('#passing_rate').text(passing_rate);
+</script>
+
+<table id="t_detail" summary="Travel times to work by main mode (Autumn 2006) - Source: London Travel Report 2007 http://www.tfl.gov.uk/assets/downloads/corporate/London-Travel-Report-2007-final.pdf">
+    <thead>    
+      <tr>
+            <th scope="col" rowspan="2">ID</th>
+            <th scope="col" rowspan="2">Job</th>
+            <th scope="col" colspan="8">Test Information</th>
+        </tr>
+        
+        <tr>
+            <th scope="col">Success</th>
+            <th scope="col">Failed</th>
+            <th scope="col">Pass %</th>
+            <th scope="col" >Tester</th>
+            <th scope="col">Start Time</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Node
+              <select NAME="TEMP" onchange="changePC(this.options[this.selectedIndex].value)">
+			  <option value="All">choose</option>
+              <option value="All">All</option>
+              <option value="AT1_GZ">AT1_GZ</option>
+              <option value="AT2_GZ">AT2_GZ</option>
+              <option value="AT3_GZ">AT3_GZ</option>
+              <option value="AT4_GZ">AT4_GZ</option>
+              <option value="AT5_GZ">AT5_GZ</option>
+              <option value="USNode">USNode</option>
+              </select>
+            </th>
+            <th scope="col">Operations</th>
+        </tr>        
+    </thead>
+    <tbody>
+        <script type="text/javascript">
+
+      for(var i=1;i<=obj2.length;i++){
+        if(obj2[i-1].shortNodeName.match(PCname)!=null || PCname.match("All")!=null){
+          document.write("<tr class='" + obj2[i-1].caseTester + "'>");
+          document.write("<th>");
+          document.write(i); 
+          document.write("</th>");
+          document.write("<td class='jobName'>");
+          document.write(obj2[i-1].caseName);
+          document.write("</td>");
+          document.write("<td>");
+		  
+		  var successChangeSign = obj2[i-1].successChange.charAt(0);
+		  if (successChangeSign != '0') {
+		    var strSuccessChangeHint;
+		    var strSuccessChangeMark;
+		    switch(successChangeSign) {
+		      case '+':
+			    strSuccessChangeHint = "More than last build.";
+			    strSuccessChangeMark = "(" + obj2[i-1].successChange + ")";
+			    break;
+			  case '-':
+			    strSuccessChangeHint = "Less than last build.";
+			    strSuccessChangeMark = "(" + obj2[i-1].successChange + ")";
+			    break;
+			  case '*':
+			    strSuccessChangeHint = "Hard to say. Test history for last build is not found.";
+			    strSuccessChangeMark = "+";
+			    break;
+			  default:
+			    strSuccessChangeHint = "Hard to say. Failed to get a sign."
+			    strSuccessChangeMark = "?";
+		    }
+		    document.write("<div title='" + strSuccessChangeHint + "' class='data_change inline'>" + strSuccessChangeMark + "</div>");
+		  }
+          document.write(obj2[i-1].success);
+          document.write("</td>");
+          document.write("<td>");
+		  
+		  var failedChangeSign = obj2[i-1].failedChange.charAt(0);
+		  if (failedChangeSign != '0') {
+		    var strFailedChangeHint;
+		    var strFailedChangeMark;
+		    switch(failedChangeSign) {
+		      case '+':
+			    strFailedChangeHint = "More than last build.";
+			    strFailedChangeMark = "(" + obj2[i-1].failedChange + ")";
+			    break;
+			  case '-':
+			    strFailedChangeHint = "Less than last build.";
+			    strFailedChangeMark = "(" + obj2[i-1].failedChange + ")";
+			    break;
+			  case '*':
+			    strFailedChangeHint = "Hard to say. Test history for last build is not found.";
+			    strFailedChangeMark = "+";
+			    break;
+			  default:
+			    strFailedChangeHint = "Hard to say. Failed to get a sign."
+			    strFailedChangeMark = "?";
+		    }
+		    document.write("<div title='" + strFailedChangeHint + "' class='data_change inline'>" + strFailedChangeMark + "</div>");
+		  }
+          document.write(obj2[i-1].failed); 
+          document.write("</td>");
+          document.write("<td>");
+		  
+		  var successPctChangeSign = obj2[i-1].successPctChange.charAt(0);
+		  if (successPctChangeSign != '0') {
+		    var strSuccessPctChangeHint;
+		    var strSuccessPctChangeMark;
+			var fontColor = "";
+		    switch(successPctChangeSign) {
+		      case '+':
+			    strSuccessPctChangeHint = "Better than last build. &#128578;";
+			    strSuccessPctChangeMark = "(" + obj2[i-1].successPctChange + ")";
+				fontColor = "green";
+			    break;
+			  case '-':
+			    strSuccessPctChangeHint = "Not so good as last build. &#128577;";
+			    strSuccessPctChangeMark = "(" + obj2[i-1].successPctChange + ")";
+				fontColor = "red";
+			    break;
+			  case '*':
+			    strSuccessPctChangeHint = "Hard to say. Test history for last build is not found. &#128528;";
+			    strSuccessPctChangeMark = "+";
+			    break;
+			  default:
+			    strSuccessPctChangeHint = "Hard to say. Failed to get a sign. &#128528;"
+			    strSuccessPctChangeMark = "?";
+		    }
+		    document.write("<div style='color:" + fontColor + "' title='" + strSuccessPctChangeHint + "' class='data_change inline'>" + strSuccessPctChangeMark + "</div>");
+		  }
+          document.write(obj2[i-1].successPct + "%"); 
+          document.write("</td>");
+          document.write("<td>");
+          document.write(obj2[i-1].caseTester); 
+          document.write("</td>");
+          document.write("<td>");
+          document.write(obj2[i-1].startTime); 
+          document.write("</td>");
+          document.write("<td>");
+          document.write(obj2[i-1].duration); 
+          document.write("</td>");
+          var strTip = "";
+          strTip = strTip.concat("<td title='OS: ", obj2[i-1].osversion, "&#013 Screen Resolution: ", obj2[i-1].screenresolution, "'>");
+          document.write(strTip);
+          document.write(obj2[i-1].shortNodeName); 
+          document.write("</td>");
+          document.write("<td>");
+          var str = ""; 
+          if(obj2[i-1].caseTester == 'passino')
+          {
+            str=str.concat("<a target='_blank' href=/RxReports/NohoReport/", obj2[i-1].reportFile, "><img src='/icons/RanorexReport.png' alt='Ranorex Report' title='Open Ranorex Report - ", obj2[i-1].caseName, "'/></a>");
+          }
+          else
+          {
+            str=str.concat("<a href='javascript:clickaction3(","&quot;",obj2[i-1].caseName,"&quot;",")'' ><img src='/icons/clock.png' title='Run job - ",obj2[i-1].caseName,"'/></a>&nbsp;");
+            str=str.concat("<a target='_blank' href=http://192.168.18.131:8080/job/Origin_Latest_",obj2[i-1].caseName,"/",obj2[i-1].buildID,"/console><img src='/icons/terminal.png' alt='Jenkins Log' title='Open Jenkins Log - ",obj2[i-1].caseName,"'/></a>&nbsp;");
+            str=str.concat("<a target='_blank' href=/RxReports/", obj2[i-1].reportFile, "><img src='/icons/RanorexReport.png' alt='Ranorex Report' title='Open Ranorex Report - ", obj2[i-1].caseName, "'/></a>"); 
+          }
+          document.write(str);
+          document.write("</td>");
+          document.write("</tr>");
+        }
+    }
+</script>
+    </tbody>
+
+</table>
+
+</body>
+</html>
